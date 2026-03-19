@@ -1,0 +1,42 @@
+<section class="section-faq-product" style="padding: 50px 0; background-color: #fafafa;">
+  <div class="page-width" style="max-width: 800px; margin: 0 auto; padding: 0 20px;">
+    <h2 style="text-align: center; font-family: sans-serif; margin-bottom: 30px;">{{ section.settings.title }}</h2>
+    
+    <div class="faq-wrapper">
+      {%- assign faq_data = product.metafields.custom.lista_de_faq.value -%}
+      
+      {%- if faq_data != blank -%}
+          <details style="border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; background: #fff; cursor: pointer;">
+            <summary style="padding: 15px; font-weight: bold; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+              {{ faq_data.pergunta }} 
+              <span>+</span>
+            </summary>
+            <div style="padding: 0 15px 15px; color: #444; line-height: 1.5;">
+              {{ faq_data.resposta | newline_to_br }}
+            </div>
+          </details>
+      {%- else -%}
+        <p style="text-align: center; color: #888;">Adicione perguntas frequentes no Admin deste produto.</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FAQ do Produto",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título",
+      "default": "Dúvidas Frequentes"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ do Produto"
+    }
+  ]
+}
+{% endschema %}
