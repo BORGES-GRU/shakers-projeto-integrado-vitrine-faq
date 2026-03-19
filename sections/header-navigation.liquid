@@ -1,0 +1,16 @@
+<header style="padding: 20px; border-bottom: 1px solid #eee;">
+  <div class="page-width" style="display: flex; justify-content: space-between; align-items: center;">
+    <div class="logo"><strong>{{ shop.name }}</strong></div>
+    <nav>
+      <ul style="list-style: none; display: flex; gap: 20px;">
+        {% for link in linklists.main-menu.links %}
+          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+{% schema %}
+{ "name": "Navegação", "settings": [] }
+{% endschema %}
