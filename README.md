@@ -35,4 +35,4 @@ Este projeto consiste no desenvolvimento de uma vitrine funcional dentro da plat
 
 ## 🔗 Links 
 * **Pull Request:** https://github.com/BORGES-GRU/shakers-projeto-integrado-vitrine-faq/pull/1
-* **Vídeo de Apresentação:** [Link do seu vídeo aqui]
+* **Vídeo de Apresentação:** https://drive.google.com/file/d/1GBqBpFEKtXfIyi0xMnVLa9LCcnDpkgLn/view?usp=sharing
