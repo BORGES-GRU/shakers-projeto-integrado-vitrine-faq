@@ -14,12 +14,15 @@
       >
     {%- endif -%}
 
-    {% comment %} This a way to wait for main content to load when navigating to a new page so that the view transitions can work consistently {% endcomment %}
+    {% comment %} ADICIONADO AQUI: CSS do Swiper para o Metaobject Slider {% endcomment %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
     {% if settings.transition_to_main_product or settings.page_transition_enabled %}
       <link
         rel="expect"
         href="#MainContent"
         blocking="render"
+        href="#MainContent"
         id="view-transition-render-blocker"
       >
     {% endif %}
@@ -36,22 +39,22 @@
     {% endif %}
 
     {{ content_for_header }}
+
+    {% comment %} ADICIONADO AQUI: Chamada do seu CSS customizado do slider {% endcomment %}
+    {{ "metaobject-slider.css" | asset_url | stylesheet_tag }}
+
+    {{ 'theme-custom.css' | asset_url | stylesheet_tag }}
   </head>
 
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
+    
     <div id="header-group">
-      {% sections 'header-group' %}
+      {% section 'header' %}
     </div>
 
     <script>
-      // Inline header height and menu style calculations to prevent layout shift
-      // Note: Updates in calculateHeaderGroupHeight(), updateTransparentHeaderOffset() and setHeaderMenuStyle() utilities.js should be kept in sync with this function
       (function setHeaderHeighCustomProperties() {
-        /*
-         * Header calculation functions for maintaining CSS variables
-         * Mimic calculateHeaderGroupHeight() in utilities.js
-         */
         const header = document.querySelector('header-component');
         const headerGroup = document.querySelector('#header-group');
         const hasHeaderSection = headerGroup?.querySelector('.header-section');
@@ -59,8 +62,6 @@
         if (!header || !headerGroup) return;
 
         const headerHeight = header.offsetHeight;
-
-        // Calculate the total height of the header group
         let headerGroupHeight = 0;
         const children = headerGroup.children;
         for (let i = 0; i < children.length; i++) {
@@ -69,19 +70,12 @@
           headerGroupHeight += element.offsetHeight;
         }
 
-        // Check for transparent header special case
         if (header.hasAttribute('transparent') && header.parentElement?.nextElementSibling) {
           headerGroupHeight += headerHeight;
         }
 
-        // Set CSS variables
         document.body.style.setProperty('--header-height', `${headerHeight}px`);
         document.body.style.setProperty('--header-group-height', `${headerGroupHeight}px`);
-
-        /**
-         * Updates CSS custom properties for transparent header offset calculation
-         * Mimic updateTransparentHeaderOffset() in utilities.js
-         */
 
         if (!hasHeaderSection || !header?.hasAttribute('transparent')) {
           document.body.style.setProperty('--transparent-header-offset-boolean', '0');
@@ -89,7 +83,6 @@
         }
 
         const hasImmediateSection = hasHeaderSection.nextElementSibling?.classList.contains('shopify-section');
-
         const shouldApplyOffset = !hasImmediateSection ? '1' : '0';
         document.body.style.setProperty('--transparent-header-offset-boolean', shouldApplyOffset);
       })();
@@ -123,5 +116,8 @@
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
+
+   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+    <script src="{{ 'metaobject-slider.js' | asset_url }}" defer="defer"></script>
   </body>
 </html>

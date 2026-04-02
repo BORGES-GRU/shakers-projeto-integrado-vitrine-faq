@@ -1,0 +1,180 @@
+{% liquid
+  assign faq_product = product | default: closest.product
+  assign faq_metafield = faq_product.metafields.custom.lista_de_faq
+  assign faq_items = faq_metafield.value
+%}
+
+{% if faq_metafield != blank and faq_items != blank %}
+  <div class="section-background color-{{ section.settings.color_scheme }}"></div>
+  <section
+    class="section section--{{ section.settings.section_width }} spacing-style color-{{ section.settings.color_scheme }} product-faq"
+    style="{% render 'spacing-style', settings: section.settings %}"
+    aria-label="{{ section.settings.heading | escape }}"
+    data-testid="product-faq"
+    {{ section.shopify_attributes }}
+  >
+    <div class="product-faq__inner">
+      {% if section.settings.heading != blank %}
+        <h2 class="product-faq__title">{{ section.settings.heading | escape }}</h2>
+      {% endif %}
+
+      <div class="product-faq__items">
+        {% for faq_item in faq_items %}
+          {% liquid
+            assign question = faq_item.pergunta.value | default: faq_item.pergunta
+            assign answer = faq_item.resposta
+          %}
+
+          {% if question != blank and answer != blank %}
+            <accordion-custom class="product-faq__accordion">
+              <details class="product-faq__details">
+                <summary class="product-faq__summary">
+                  <span class="product-faq__question">{{ question | escape }}</span>
+                  <span class="svg-wrapper icon-plus icon-animated">
+                    {{- 'icon-plus.svg' | inline_asset_content -}}
+                  </span>
+                </summary>
+
+                <div class="product-faq__answer details-content">
+                  {% if answer.type != blank and answer.type contains 'rich_text' %}
+                    {{ answer | metafield_tag }}
+                  {% elsif answer.value != blank %}
+                    {{ answer.value | newline_to_br }}
+                  {% else %}
+                    {{ answer | newline_to_br }}
+                  {% endif %}
+                </div>
+              </details>
+            </accordion-custom>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endif %}
+
+{% stylesheet %}
+  .product-faq {
+    grid-column: 1 / -1;
+  }
+
+  .product-faq__inner {
+    width: min(100%, var(--narrow-content-width));
+    margin: 0 auto;
+    display: grid;
+    gap: var(--gap-md);
+  }
+
+  .product-faq__title {
+    margin: 0;
+  }
+
+  .product-faq__items {
+    display: grid;
+    gap: var(--gap-xs);
+  }
+
+  .product-faq__details {
+    border-radius: var(--style-border-radius-block);
+    border: var(--style-border-width-inputs) solid rgb(var(--color-foreground-rgb) / 0.16);
+    overflow: hidden;
+  }
+
+  .product-faq__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+    padding: var(--padding-md);
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .product-faq__question {
+    font-size: var(--font-paragraph--size);
+    font-weight: 600;
+    line-height: var(--font-paragraph--line-height);
+  }
+
+  .product-faq__answer {
+    padding: 0 var(--padding-md) var(--padding-md);
+  }
+
+  .product-faq__answer > *:first-child {
+    margin-top: 0;
+  }
+
+  .product-faq__answer > *:last-child {
+    margin-bottom: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product FAQ",
+  "tag": "section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "default": "Perguntas frequentes"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Largura da seção",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "Page width"
+        },
+        {
+          "value": "full-width",
+          "label": "Full width"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Esquema de cores",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Espaçamento"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Superior",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Inferior",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product FAQ",
+      "category": "Produtos"
+    }
+  ]
+}
+{% endschema %}

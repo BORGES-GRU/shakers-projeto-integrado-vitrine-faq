@@ -1,0 +1,52 @@
+<section class="hero-slider">
+    <div class="hero-slider__container">
+        <div class="container">
+          <div class="hero-slider__media" aria-hidden="true">
+            {% if section.settings.image != blank %}
+              {{
+                section.settings.image
+                | image_url: width: 2400
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '768, 1200, 1600, 2000, 2400',
+                  sizes: '100vw',
+                  alt: section.settings.title,
+                  class: 'hero-slider__image'
+              }}
+            {% else %}
+              {{ 'hero-apparel-1' | placeholder_svg_tag: 'hero-slider__image hero-slider__image--placeholder' }}
+            {% endif %}
+          </div>
+      
+          <div class="hero-slider__overlay"></div>
+      
+          <div class="hero-slider__content page-width">
+            <div class="hero-slider__text">
+              {% if section.settings.title != blank %}
+                <h1>{{ section.settings.title }}</h1>
+              {% endif %}
+              {% if section.settings.subtext != blank %}
+                <p>{{ section.settings.subtext }}</p>
+              {% endif %}
+              {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+                <a href="{{ section.settings.button_link }}" class="btn button">{{ section.settings.button_label }}</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+    </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero Principal",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Imagem do Banner" },
+    { "type": "text", "id": "title", "label": "Título Principal", "default": "PURE BALANCE" },
+    { "type": "textarea", "id": "subtext", "label": "Texto de Apoio" },
+    { "type": "text", "id": "button_label", "label": "Texto do Botão", "default": "Confira" },
+    { "type": "url", "id": "button_link", "label": "Link do Botão" }
+  ],
+  "presets": [{ "name": "Hero Principal" }]
+}
+{% endschema %}

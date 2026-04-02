@@ -1,0 +1,70 @@
+    <section class="collection-list section-{{ section.id }}-padding">
+    <div class="container" style="padding: 2rem 20px;">
+        {%- assign target_collection = section.settings.collection -%}
+        
+        <div class="collection-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin: 0;">{{ section.settings.custom_title | default: target_collection.title | default: "Nossa Coleção" }}</h2>
+        <a href="{{ target_collection.url }}" class="view-all">Ver todos</a>
+        </div>
+
+        <div class="product-grid" style="display: grid; grid-template-columns: repeat({{ section.settings.products_to_show }},1fr); gap: 20px;">
+        {%- if target_collection != blank -%}
+            {%- for product in target_collection.products limit: section.settings.products_to_show -%}
+            <div class="product-item" style="text-align: center;">
+                <a href="{{ product.url }}" style="text-decoration: none; color: inherit;">
+                <div class="product-image" style="margin-bottom: 10px;">
+                    {%- if product.featured_image != blank -%}
+                    {% comment %} Uso de image_tag para evitar erros de width/height {% endcomment %}
+                    {{ product.featured_image | image_url: width: 400 | image_tag: 
+                        loading: 'lazy',
+                        widths: '200, 400',
+                        alt: product.title,
+                        style: 'width: 100%; height: auto; border-radius: 8px;'
+                    }}
+                    {%- else -%}
+                    {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                    {%- endif -%}
+                </div>
+                <h3 style="font-size: 1.1rem; margin: 5px 0;">{{ product.title }}</h3>
+                <p style="font-weight: bold; color: #333;">{{ product.price | money }}</p>
+                </a>
+            </div>
+            {%- endfor -%}
+        {%- else -%}
+            <p>Por favor, selecione uma coleção</p>
+        {%- endif -%}
+        </div>
+    </div>
+    </section>
+
+    {% schema %}
+    {
+    "name": "Listagem de Coleção",
+    "settings": [
+        {
+        "type": "collection",
+        "id": "collection",
+        "label": "Selecionar Coleção"
+        },
+        {
+        "type": "text",
+        "id": "custom_title",
+        "label": "Título"
+        },
+        {
+        "type": "range",
+        "id": "products_to_show",
+        "min": 2,
+        "max": 8,
+        "step": 1,
+        "default": 4,
+        "label": "Quantidade de produtos"
+        }
+    ],
+    "presets": [
+        {
+        "name": "Listagem de Coleção"
+        }
+    ]
+    }
+    {% endschema %}
